@@ -1,0 +1,24 @@
+# Generated JSON reports (regenerated on each run)
+proposal_aligned_report_*.json
+encrypted_contract_log.json
+
+# Python virtual environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Personal thesis documents
+*.docx
+*.pdf
+*.pptx
+*.~lock.*
+
+# Node modules (for snarkjs)
+node_modules/
+zkp_prod/node_modules/
+
+# Screenshots / temp
+screenshots/
+*.tmp
