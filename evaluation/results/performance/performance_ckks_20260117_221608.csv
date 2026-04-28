@@ -1,0 +1,12 @@
+ciphertext_size_bytes,error,expansion_ratio,mean_time_sec,metric,multiplicative_depth,n_operations,n_values,operation,plaintext_size_bytes,remaining_budget_percent,std_time_sec,time_per_op_ms,time_per_value_ms,timestamp
+,,,0.13943656285603842,,,,100,encryption,,,0.001906367688786791,,1.394365628560384,2026-01-17T22:16:07.330813
+,,,0.06723435719807942,,,,100,decryption,,,0.005844597620306656,,0.6723435719807943,2026-01-17T22:16:07.666526
+,,,0.014062881469726562,,,100,,addition,,,0.0014567648457920683,0.14062881469726562,,2026-01-17T22:16:07.996229
+,Multiplication not supported or failed,,,,,,,multiplication,,,,,,2026-01-17T22:16:08.154343
+80919,,3371.625,,ciphertext_size,,,,,24,,,,,2026-01-17T22:16:08.158575
+,,,,noise_budget,1,,,,,50.0,,,,2026-01-17T22:16:08.158599
+,,,,noise_budget,2,,,,,25.0,,,,2026-01-17T22:16:08.158606
+,,,,noise_budget,3,,,,,12.5,,,,2026-01-17T22:16:08.158610
+,,,,noise_budget,4,,,,,6.25,,,,2026-01-17T22:16:08.158615
+,,,,noise_budget,5,,,,,3.125,,,,2026-01-17T22:16:08.158622
+,Scale error at depth 1,,,approximation_error,1,,,,,,,,,2026-01-17T22:16:08.165708

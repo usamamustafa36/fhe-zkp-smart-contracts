@@ -1,0 +1,2 @@
+operation,scheme,n_values,total_time_mean,total_time_std,avg_latency_ms,throughput_ops_sec,memory_delta_mb_mean,timestamp
+encryption,CKKS,10,0.023640918731689452,0.003831969350372662,2.3640918731689453,422.9954052756633,0.125,2026-02-17T11:52:09.055169

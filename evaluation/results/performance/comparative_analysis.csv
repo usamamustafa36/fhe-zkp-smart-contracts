@@ -1,0 +1,5 @@
+,privacy,verifiability,computation_overhead,storage_overhead,trust_assumptions,use_cases
+Plain Smart Contracts,None - all data public,Full - on-chain verification,1x (baseline),1x (baseline),Blockchain only,Public computations
+ZKP-only Systems,High - zero-knowledge proofs,Full - proof verification,100-1000x (proof generation),Low - compact proofs,Cryptographic assumptions,Private verification
+FHE-only Systems,Full - encrypted computation,Limited - trust decryptor,1000-10000x,500-1000x,Key holder trust,Private computation
+This Framework (FHE + ZKP),High - FHE encryption,Medium - abstracted ZKP,1000-10000x (FHE dominant),500-1000x (ciphertexts),Key holder + ZKP oracle,Privacy-first with validation

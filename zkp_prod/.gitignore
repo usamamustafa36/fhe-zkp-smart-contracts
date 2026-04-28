@@ -1,0 +1,18 @@
+# ZKP Build Artifacts (regenerate with build.sh)
+artifacts/*.r1cs
+artifacts/*.zkey
+artifacts/*.wasm
+artifacts/*.wtns
+artifacts/*_js/
+artifacts/temp_*
+
+# Keep these
+!artifacts/verification_key.json
+!artifacts/circuit_hashes.json
+
+# Dependencies
+node_modules/
+
+# Temp files
+*.log
+.DS_Store

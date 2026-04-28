@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer - Privacy-Preserving Smart Contracts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .refresh-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .refresh-btn.spinning {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .transactions-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+            color: white;
+        }
+        
+        .transactions-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .transactions-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .transactions-table tbody tr {
+            transition: all 0.2s;
+        }
+        
+        .transactions-table tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+        
+        .transactions-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tx-hash {
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .tx-hash:hover {
+            color: #5568d3;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-operation {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.8em;
+            margin: 0;
+        }
+        
+        .close {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close:hover {
+            transform: scale(1.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .detail-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .detail-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .address {
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>⛓️ Blockchain Explorer</h1>
+                    <p>Privacy-Preserving Smart Contract Transactions</p>
+                </div>
+                <div class="nav-buttons">
+                    <a href="/" class="nav-btn">🏠 Back to Demo</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="icon">📊</div>
+                <div class="value" id="totalTxs">-</div>
+                <div class="label">Total Transactions</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔢</div>
+                <div class="value" id="currentBlock">-</div>
+                <div class="label">Current Block</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <div class="value" id="successTxs">-</div>
+                <div class="label">Successful</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🧮</div>
+                <div class="value" id="operations">-</div>
+                <div class="label">Operations</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by transaction hash, address, or block number...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="success">Success</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                    <select class="filter-select" id="operationFilter">
+                        <option value="">All Operations</option>
+                        <option value="fhe_addition">FHE Addition</option>
+                        <option value="fhe_computation">FHE Computation</option>
+                    </select>
+                    <button class="refresh-btn" onclick="loadTransactions()" id="refreshBtn">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div id="transactionsContainer">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading transactions...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction Detail Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Transaction Details</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading transaction details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allTransactions = [];
+        let autoRefreshInterval = null;
+        
+        // Load transactions on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadTransactions();
+            setupAutoRefresh();
+            setupSearch();
+        });
+        
+        function setupAutoRefresh() {
+            // Auto-refresh every 5 seconds
+            autoRefreshInterval = setInterval(() => {
+                loadStats();
+                loadTransactions();
+            }, 5000);
+        }
+        
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const operationFilter = document.getElementById('operationFilter');
+            
+            searchInput.addEventListener('input', filterTransactions);
+            statusFilter.addEventListener('change', filterTransactions);
+            operationFilter.addEventListener('change', filterTransactions);
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/blockchain/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalTxs').textContent = data.total_transactions || 0;
+                    document.getElementById('currentBlock').textContent = data.current_block || 0;
+                    document.getElementById('operations').textContent = Object.keys(data.operations || {}).length;
+                    
+                    // Count successful transactions
+                    const successCount = allTransactions.filter(tx => tx.status === 'success').length;
+                    document.getElementById('successTxs').textContent = successCount;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function loadTransactions() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.classList.add('spinning');
+            
+            try {
+                const response = await fetch('/api/blockchain/transactions');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allTransactions = data.transactions || [];
+                    displayTransactions(allTransactions);
+                    loadStats();
+                } else {
+                    showEmptyState('Failed to load transactions');
+                }
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                showEmptyState('Error loading transactions');
+            } finally {
+                refreshBtn.classList.remove('spinning');
+            }
+        }
+        
+        function displayTransactions(transactions) {
+            const container = document.getElementById('transactionsContainer');
+            
+            if (transactions.length === 0) {
+                showEmptyState('No transactions found');
+                return;
+            }
+            
+            let html = `
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction Hash</th>
+                            <th>Block</th>
+                            <th>Operation</th>
+                            <th>From</th>
+                            <th>Status</th>
+                            <th>Gas Used</th>
+                            <th>Timestamp</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            transactions.forEach(tx => {
+                const date = new Date(tx.timestamp);
+                const formattedDate = date.toLocaleString();
+                
+                html += `
+                    <tr>
+                        <td>
+                            <span class="tx-hash" onclick="showTransactionDetails('${tx.hash}')">
+                                ${tx.hash.substring(0, 16)}...
+                            </span>
+                        </td>
+                        <td>#${tx.block_number}</td>
+                        <td><span class="badge badge-operation">${tx.operation}</span></td>
+                        <td><span class="address">${tx.from.substring(0, 10)}...</span></td>
+                        <td>
+                            <span class="badge ${tx.status === 'success' ? 'badge-success' : 'badge-failed'}">
+                                ${tx.status === 'success' ? '✅ Success' : '❌ Failed'}
+                            </span>
+                        </td>
+                        <td>${tx.gas_used.toLocaleString()}</td>
+                        <td class="timestamp">${formattedDate}</td>
+                        <td>
+                            <button onclick="showTransactionDetails('${tx.hash}')" 
+                                    style="padding: 6px 12px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        function filterTransactions() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const operationFilter = document.getElementById('operationFilter').value;
+            
+            let filtered = allTransactions.filter(tx => {
+                const matchesSearch = !searchTerm || 
+                    tx.hash.toLowerCase().includes(searchTerm) ||
+                    tx.from.toLowerCase().includes(searchTerm) ||
+                    tx.block_number.toString().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || tx.status === statusFilter;
+                const matchesOperation = !operationFilter || tx.operation === operationFilter;
+                
+                return matchesSearch && matchesStatus && matchesOperation;
+            });
+            
+            displayTransactions(filtered);
+        }
+        
+        function showEmptyState(message) {
+            const container = document.getElementById('transactionsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h3>${message}</h3>
+                    <p>Transactions will appear here once they are submitted to the blockchain.</p>
+                </div>
+            `;
+        }
+        
+        async function showTransactionDetails(txHash) {
+            const modal = document.getElementById('transactionModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modal.style.display = 'block';
+            modalBody.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading transaction details...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`/api/blockchain/transaction/${txHash}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const tx = data.transaction;
+                    const date = new Date(tx.timestamp);
+                    
+                    modalBody.innerHTML = `
+                        <div class="detail-section">
+                            <h3>📋 Transaction Information</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Transaction Hash:</span>
+                                <span class="detail-value">${tx.hash}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">
+                                    <span class="badge ${tx.status === 'success' ? 'badge-success' : 'badge-failed'}">
+                                        ${tx.status === 'success' ? '✅ Success' : '❌ Failed'}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Block Number:</span>
+                                <span class="detail-value">#${tx.block_number}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Block Hash:</span>
+                                <span class="detail-value">${tx.block_hash}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Transaction Index:</span>
+                                <span class="detail-value">${tx.transaction_index}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Timestamp:</span>
+                                <span class="detail-value">${date.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>👤 Addresses</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">From:</span>
+                                <span class="detail-value address">${tx.from}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">To:</span>
+                                <span class="detail-value address">${tx.to}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>⛽ Gas Information</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Gas Used:</span>
+                                <span class="detail-value">${tx.gas_used.toLocaleString()}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Gas Price:</span>
+                                <span class="detail-value">${tx.gas_price.toLocaleString()} Wei</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>🧮 Computation Details</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Operation:</span>
+                                <span class="detail-value">
+                                    <span class="badge badge-operation">${tx.operation}</span>
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Encrypted Inputs:</span>
+                                <span class="detail-value">${tx.encrypted_inputs_count || tx.encrypted_inputs?.length || 0} values</span>
+                            </div>
+                            ${tx.decrypted_result !== null && tx.decrypted_result !== undefined ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Decrypted Result:</span>
+                                <span class="detail-value"><strong>${tx.decrypted_result}</strong></span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        ${tx.zkp_proofs && tx.zkp_proofs.length > 0 ? `
+                        <div class="detail-section">
+                            <h3>🔐 ZKP Proofs (${tx.zkp_proofs.length})</h3>
+                            ${tx.zkp_proofs.map((proof, idx) => `
+                                <div style="margin-bottom: 15px; padding: 15px; background: white; border-radius: 5px;">
+                                    <strong>Proof ${idx + 1}:</strong><br>
+                                    <div style="margin-top: 10px;">
+                                        <div class="detail-row">
+                                            <span class="detail-label">Proof ID:</span>
+                                            <span class="detail-value">${proof.proof_id || 'N/A'}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Input Hash:</span>
+                                            <span class="detail-value">${proof.input_hash ? proof.input_hash.substring(0, 20) + '...' : 'N/A'}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Validator:</span>
+                                            <span class="detail-value">${proof.validator || 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        ${tx.encrypted_inputs && tx.encrypted_inputs.length > 0 ? `
+                        <div class="detail-section">
+                            <h3>🔒 Encrypted Inputs (${tx.encrypted_inputs.length})</h3>
+                            ${tx.encrypted_inputs.map((input, idx) => `
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Input ${idx + 1}:</strong>
+                                    <div style="background: white; padding: 10px; border-radius: 5px; margin-top: 5px; font-family: monospace; font-size: 0.85em; word-break: break-all;">
+                                        ${typeof input === 'string' ? input.substring(0, 100) + (input.length > 100 ? '...' : '') : JSON.stringify(input).substring(0, 100) + '...'}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        ${tx.encrypted_result ? `
+                        <div class="detail-section">
+                            <h3>🔒 Encrypted Result</h3>
+                            <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.85em; word-break: break-all;">
+                                ${typeof tx.encrypted_result === 'string' ? tx.encrypted_result.substring(0, 200) + (tx.encrypted_result.length > 200 ? '...' : '') : JSON.stringify(tx.encrypted_result).substring(0, 200) + '...'}
+                            </div>
+                        </div>
+                        ` : ''}
+                    `;
+                } else {
+                    modalBody.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">❌</div>
+                            <h3>Transaction Not Found</h3>
+                            <p>${data.error || 'Could not find this transaction'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                modalBody.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <h3>Error Loading Transaction</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('transactionModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('transactionModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+# ZKP Artifact Hashes (SHA256)
+# Generated: 2026-01-11T06:11:56Z
+# Version: v1.0.0
+
+0280f9d917f052446158c820f947ebcba4230ad631a0fdc70b6cbf1e03fddb2c  verification_key.json
+8c77258f38bfaf11c743c3144e17a1c6b97a9a2cc2fe88c1eea52cb55d6e1fb9  range_commit_0001.zkey
+fb26dc7307f2523e72192d0f0dc92fa288b90676bb85c31158ad4be814a3650d  range_commit_js/range_commit.wasm
