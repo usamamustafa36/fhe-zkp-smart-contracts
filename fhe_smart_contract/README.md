@@ -178,7 +178,7 @@ The leakage function `ℒ` explicitly models what a public blockchain observer l
 | Property | Guarantee | Assumption |
 |---|---|---|
 | Input confidentiality | CKKS IND-CPA | RLWE hardness |
-| Input validity | Groth16 soundness | Discrete log hardness |
+| Input validity | Groth16 soundness | Knowledge-soundness (GGM/AGM) + trusted setup |
 | Computation integrity | ZKP completeness | Trusted setup (Groth16 CRS) |
 | Audit transparency | Ledger append-only | Ethereum consensus |
 

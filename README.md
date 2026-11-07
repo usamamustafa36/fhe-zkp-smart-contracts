@@ -12,13 +12,13 @@ A working blockchain stack that combines fully homomorphic encryption with zero-
 
 - Encrypts contract inputs with **CKKS** (TenSEAL) before they ever touch the chain
 - Computes contract logic homomorphically on the ciphertexts
-- Generates a **Groth16** zero-knowledge proof that the computation was performed correctly
+- Generates a **Groth16** zero-knowledge range proof that each committed private input lies in [0, 1,000,000], bound to chain, contract, operation and request (the proof does **not** cover correctness of the CKKS computation; see `docs/limitations.md`)
 - Submits the ciphertext result and the ZK proof to a Solidity verifier on Sepolia
 - Performs **formal leakage characterisation** — entropy analysis on the ciphertext stream confirms >7.8 bits/byte (close to ideal randomness)
 
 ## Why
 
-Privacy-preserving smart contracts are usually demonstrated with one technique. FHE alone leaks correctness; ZKP alone leaks inputs. Combining them gives input privacy *and* verifiable execution — but the combination is rarely measured against a leakage threat model. This repo does both.
+Privacy-preserving smart contracts are usually demonstrated with one technique. FHE alone leaks correctness; ZKP alone leaks inputs. Combining them gives input privacy *and* verified input validity (not verified execution) — but the combination is rarely measured against a leakage threat model. This repo does both.
 
 ## Layout
 

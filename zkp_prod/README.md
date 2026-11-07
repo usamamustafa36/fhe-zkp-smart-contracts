@@ -16,7 +16,7 @@ This directory contains a **production-grade Zero-Knowledge Proof system** that 
 - **Zero-Knowledge**: Reveals nothing about `x` except it's in range
 
 ### **Security Properties**
-- ✅ **Cryptographic Soundness**: Cannot forge proofs for invalid `x`
+- ✅ **Cryptographic Soundness**: cannot forge proofs for out-of-range `x` (requires the `Num2Bits(32)` constraint added in Nov 2026; see `docs/CIRCUIT_SPEC.md`)
 - ✅ **Anti-Replay**: Context binding prevents proof reuse
 - ✅ **Witness Protection**: `x` and `salt` never logged/persisted
 - ✅ **On-Chain Verification**: Solidity verifier contract

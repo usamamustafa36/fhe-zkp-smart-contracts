@@ -22,10 +22,10 @@ This document provides **practical engineering limitations**. The `crypto_theory
 - **Implementation**: Circom + snarkjs (Groth16)
 - **Trusted Setup**: Powers of Tau (Hermez perpetual) + local contribution
 - **Risk**: If toxic waste from setup compromised, proofs forgeable
-- **Security Level**: ~128 bits (BN254 curve)
+- **Security Level**: about 100 bits (BN254 after the 2016 exTNFS attacks; not 128)
 
 ### Impact on Security
-- ✅ **Cryptographically sound**: Cannot forge proofs for invalid inputs
+- ✅ **Cryptographically sound** (after the Num2Bits fix, Nov 2026): cannot forge range proofs for out-of-range inputs, assuming the Groth16 knowledge-soundness assumptions (generic/algebraic group model on BN254) and an honest trusted setup
 - ✅ **On-chain verifiable**: Solidity verifier contract
 - ✅ **Zero-knowledge**: Witness (x, salt) never revealed
 - ⚠️ **Trust assumption**: Setup ceremony must be honest

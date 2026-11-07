@@ -2,6 +2,7 @@ pragma circom 2.1.6;
 
 include "circomlib/circuits/poseidon.circom";
 include "circomlib/circuits/comparators.circom";
+include "circomlib/circuits/bitify.circom";
 
 /*
  * Range Commitment Proof for Production ZKP
@@ -68,13 +69,16 @@ template RangeCommitment() {
      * 
      * We need to prove: 0 <= x <= 1,000,000
      * 
-     * In field arithmetic over BN254 (SNARK-friendly curve):
-     * - Field size ~2^254, so small positive integers are "natural"
-     * - x >= 0 is implicit for values < 2^253
-     * - We explicitly check x <= 1,000,000
-     *
-     * Using 32-bit comparator (sufficient for 1,000,000 < 2^32)
+     * In field arithmetic over BN254 there are no negative numbers:
+     * a "negative" value such as -1 is the field element p - 1.
+     * LessEqThan(n) is only sound when both inputs are already known
+     * to fit in n bits. Without that, x = p - 1 passes the comparison.
+     * So we first constrain x to 32 bits (0 <= x < 2^32), then
+     * check x <= 1,000,000.
      */
+    
+    component xBits = Num2Bits(32);
+    xBits.in <== x;
     
     component isLessThanOrEqual = LessEqThan(32);
     isLessThanOrEqual.in[0] <== x;

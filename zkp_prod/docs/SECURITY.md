@@ -22,7 +22,7 @@
 - SNARK computational assumptions hold
 
 **Attack Success Probability**: 
-- Negligible (2^-128 security level with proper parameters)
+- Negligible (about 2^-100 on BN254, given the assumptions above)
 
 ---
 
@@ -122,7 +122,7 @@ except Exception as e:
 - Power Knowledge of Exponent (q-PKE)
 - Trusted setup randomness not compromised
 
-**Security Level**: ~128 bits (with BN254 curve)
+**Security Level**: about 100 bits (BN254 after the 2016 exTNFS attacks; not 128)
 
 **Proof Size**: 
 - 3 group elements (~192 bytes)
